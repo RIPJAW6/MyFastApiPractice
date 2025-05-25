@@ -1,7 +1,7 @@
 from sqlalchemy import select, delete
 from src.schemas import BookCreate, Book
 from src.models import BookModel
-from src.database import new_session
+from src.database import SessionDep, new_session
 
 async def create_book(book_in: BookCreate) -> BookCreate:
     async with new_session() as session:
@@ -11,11 +11,10 @@ async def create_book(book_in: BookCreate) -> BookCreate:
         return book_in
 
 
-async def get_books() -> list[Book]:
-    async with new_session() as session:
-        stmt = select(BookModel)
-        results = await session.execute(stmt)
-        return results.scalars().all()
+async def get_books(session: SessionDep) -> list[Book]:
+    stmt = select(BookModel)
+    results = await session.execute(stmt)
+    return results.scalars().all()
 
 
 async def get_book(book_id: int) -> Book | None:
