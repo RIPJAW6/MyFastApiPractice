@@ -30,3 +30,11 @@ async def delete_books():
         await session.execute(stmt)
         await session.commit()
         return {"message": "Все книги удалены!"}
+
+
+async def delete_book(book_id: int):
+    async with new_session() as session:
+        stmt = delete(BookModel).filter_by(id=book_id)
+        await session.execute(stmt)
+        await session.commit()
+        return {"message": "Книга успешно удалена!"}
